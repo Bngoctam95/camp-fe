@@ -1,0 +1,33 @@
+.loginButton {
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--secondary-color);
+    opacity: 0.9;
+  }
+}
+
+.navLink {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--secondary-color);
+}
+
+.navLink.active {
+  color: var(--secondary-color);
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background-color: var(--secondary-color);
+}

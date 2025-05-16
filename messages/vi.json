@@ -1,0 +1,13 @@
+{
+  "HomePage": {
+    "title": "Chào mừng đến với trang web của chúng tôi!",
+    "about": "Đi đến trang about"
+  },
+  "Header": {
+    "home": "Trang chủ",
+    "rentals": "Cho thuê",
+    "blogs": "Blog",
+    "articles": "Bài viết",
+    "login": "Đăng nhập"
+  }
+}
