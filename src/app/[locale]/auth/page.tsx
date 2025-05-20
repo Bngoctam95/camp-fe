@@ -13,16 +13,18 @@ import { Button } from '@/components/ui/button';
 import { loginAPI, registerAPI } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations('auth');
   const toast = useToast();
+  const router = useRouter();
 
   // Extend the user schema with more validation
   const loginSchema = z.object({
-    username: z.string().min(1, t('validLoginUsername')),
+    username: z.string().min(1, t('validLoginEmail')),
     password: z.string().min(1, t('validLoginPassword')),
   });
 
@@ -55,6 +57,10 @@ export default function AuthPage() {
 
     if (res?.data) {
       toast.success(t('loginSuccess'));
+
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
     } else {
       const messageKey = res.message_key;
       const fallbackMessage = res.message;
@@ -86,6 +92,7 @@ export default function AuthPage() {
 
     if (res?.data) {
       toast.success(t('registerSuccess'));
+      setActiveTab('login');
     } else {
       const messageKey = res.message_key;
       const fallbackMessage = res.message;
@@ -183,10 +190,10 @@ export default function AuthPage() {
                         name="username"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('username')}</FormLabel>
+                            <FormLabel>{t('email')}</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder={t('enterUsername')}
+                                placeholder={t('enterEmail')}
                                 {...field}
                                 autoComplete="username"
                               />

@@ -17,7 +17,11 @@
   },
   "auth": {
     "user": {
-      "invalid_password": "Sai mật khẩu"
+      "invalid_password": "Sai mật khẩu",
+      "not_found": "Tài khoản không tồn tại"
+    },
+    "register": {
+      "email_already_exists": "Email đã tồn tại"
     },
     "welcome": "Chào mừng đến với FanCamping",
     "subtitle": "Nền tảng toàn diện dành cho những người đam mê cắm trại",
@@ -52,7 +56,8 @@
     "feature4": "Kết nối với những người đam mê ngoài trời và kết bạn",
     "loginSuccess": "Đăng nhập thành công!",
     "loginError": "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.",
-    "validLoginUsername": "Nhập tên đăng nhập",
+    "registerSuccess": "Đăng ký thành công!",
+    "validLoginEmail": "Nhập email đăng nhập",
     "validLoginPassword": "Nhập mật khẩu đăng nhập",
     "validRegisterUsername": "Nhập tên đăng nhập",
     "validRegisterEmail": "Email không hợp lệ",

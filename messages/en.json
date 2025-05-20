@@ -17,7 +17,11 @@
   },
   "auth": {
     "user": {
-      "invalid_password": "Invalid password"
+      "invalid_password": "Invalid password",
+      "not_found": "User not found"
+    },
+    "register": {
+      "email_already_exists": "Email already exists"
     },
     "welcome": "Welcome to FanCamping",
     "subtitle": "Your all-in-one platform for camping enthusiasts",
@@ -53,7 +57,7 @@
     "loginSuccess": "Login successful!",
     "loginError": "Login failed. Please check your credentials.",
     "registerSuccess": "Register successful!",
-    "validLoginUsername": "Username is required",
+    "validLoginEmail": "Email is required",
     "validLoginPassword": "Password is required",
     "validRegisterUsername": "Username is required",
     "validRegisterEmail": "Invalid email",
