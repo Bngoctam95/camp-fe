@@ -2,17 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Tent, Menu, X } from "lucide-react";
+import { Tent, Menu, X, ChevronDown, UserRound } from "lucide-react";
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import styles from './user.header.module.css';
 import LanguageSwitcher from '@/components/layouts/language.switcher';
 import { useTranslations } from 'next-intl';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { useCurrentApp } from '@/hooks/useCurrentApp';
 
 export default function UserHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const [isLoggedIn] = useState(false);
+  const { isAuthenticated, user } = useCurrentApp();
 
   const locale = pathname.split('/')[1] || 'en';
   const t = useTranslations('Header');
@@ -86,13 +88,33 @@ export default function UserHeader() {
               </li>
               <LanguageSwitcher currentLocale={locale} />
 
-              {isLoggedIn ? (
-                <li>
-                  <Link href="">
-                    <Button className={`${styles.loginButton} bg-campfire font-montserrat font-medium`}>
-                      aaa
-                    </Button>
-                  </Link>
+              {isAuthenticated ? (
+                <li className="flex items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="hover:bg-opacity-80 px-3 py-2 rounded font-montserrat font-medium">
+                        <UserRound/>
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="font-montserrat">
+                      { user?.role === 'super_admin' && (
+                        <DropdownMenuItem>
+                          <Link href="/admin" className="w-full">
+                            Admin Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem>
+                        <Link href="/blogs/create" className="w-full">
+                          Create Blog
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </li>
               ) : (
                 <li>
