@@ -10,16 +10,6 @@ declare global {
         data?: T;
     }
 
-    interface IModelPaginate<T> {
-        meta: {
-            current: number;
-            pageSize: number;
-            pages: number;
-            total: number;
-        },
-        result: T[]
-    }
-
     interface ILogin {
         access_token: string;
         user: {
@@ -45,47 +35,5 @@ declare global {
         role: string;
         avatar: string;
         id: string;
-    }
-
-    interface IFetchAccount {
-        user: IUser
-    }
-
-    interface IUserTable {
-        _id: string;
-        fullName: string;
-        email: string;
-        phone: string;
-        role: string;
-        avatar: string;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-    }
-
-    interface IDeleteUser {
-        acknowledged: boolean,
-        deletedCount: number
-    }
-
-    interface IDataImport {
-        fullName: string;
-        email: string;
-        phone: string;
-        password: string;
-    }
-
-    interface IBookTable {
-        _id: string;
-        thumbnail: string;
-        slider: string[];
-        mainText: string;
-        author: string;
-        price: number;
-        sold: number;
-        quantity: string;
-        category: string;
-        createdAt: Date;
-        updatedAt: Date;
     }
 }

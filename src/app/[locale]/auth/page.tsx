@@ -14,7 +14,7 @@ import { loginAPI, registerAPI } from '@/lib/api';
 import { useTranslations } from 'next-intl';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useCurrentApp } from '@/hooks/useCurrentApp';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -22,8 +22,7 @@ export default function AuthPage() {
   const t = useTranslations('auth');
   const toast = useToast();
   const router = useRouter();
-  const { setIsAuthenticated, setUser } = useCurrentApp();
-
+  const { login } = useAuth();
   // Extend the user schema with more validation
   const loginSchema = z.object({
     username: z.string().min(1, t('validLoginEmail')),
@@ -58,12 +57,10 @@ export default function AuthPage() {
     const res = await loginAPI(data.username, data.password);
 
     if (res?.data) {
+      const { access_token, user } = res.data;
+      login(access_token, user);
       toast.success(t('loginSuccess'));
-      setIsAuthenticated(true);
-      setUser(res.data.user);
-      setTimeout(() => {
-        router.push('/');
-      }, 3000);
+      router.push('/');
     } else {
       const messageKey = res.message_key;
       const fallbackMessage = res.message;

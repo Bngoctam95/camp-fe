@@ -4,7 +4,7 @@ import { routing } from '@/i18n/routing';
 import '@/app/globals.css'
 import { montserrat, openSans } from '@/app/fonts';
 import { Toaster } from "sonner";
-import { AppProvider } from '@/contexts/app.context';
+import { ClientAuthProvider } from '@/components/providers/auth.provider';
 
 export default async function LocaleLayout({
   children,
@@ -22,10 +22,12 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${montserrat.variable} ${openSans.variable}`}>
       <body className={`${montserrat.className} ${openSans.className}`}>
-        <AppProvider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
-          <Toaster richColors position="top-center" />
-        </AppProvider>
+        <NextIntlClientProvider locale={locale}>
+          <ClientAuthProvider>
+            {children}
+          </ClientAuthProvider>
+        </NextIntlClientProvider>
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

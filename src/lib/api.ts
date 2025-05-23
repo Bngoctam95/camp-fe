@@ -16,7 +16,14 @@ export const registerAPI = (name: string, email: string, password: string, phone
 
 export const fetchAccountAPI = () => {
   const urlBackend = "auth/profile";
-  return (
-      axios.get<IBackendRes<IFetchAccount>>(urlBackend)
-  )
+  return axios.get<IBackendRes<IUser>>(urlBackend, {
+    withCredentials: true
+  });
+}
+
+export const logoutAPI = () => {
+  const urlBackend = "/auth/logout";
+  return axios.post<IBackendRes<IUser>>(urlBackend, {}, {
+    withCredentials: true
+  });
 }

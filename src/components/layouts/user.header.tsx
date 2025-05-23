@@ -2,19 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Tent, Menu, X, ChevronDown, UserRound } from "lucide-react";
+import { Tent, Menu, X, ChevronDown, UserRound, Loader2 } from "lucide-react";
 import { useState } from 'react';
 import { Button } from '../ui/button';
 import styles from './user.header.module.css';
 import LanguageSwitcher from '@/components/layouts/language.switcher';
 import { useTranslations } from 'next-intl';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
-import { useCurrentApp } from '@/hooks/useCurrentApp';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function UserHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
-  const { isAuthenticated, user } = useCurrentApp();
+  const { user, isAuthenticated, logout, isLoading } = useAuth();
 
   const locale = pathname.split('/')[1] || 'en';
   const t = useTranslations('Header');
@@ -23,11 +24,92 @@ export default function UserHeader() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const handleLogout = async () => {
+    const confirmed = window.confirm('Are you sure you want to logout?');
+    if (!confirmed) return;
+
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   const isActive = (path: string) => {
     if (path === `/${locale}`) {
       return pathname === `/${locale}` || pathname === `/${locale}/`;
     }
     return pathname === path || pathname === `${path}/`;
+  };
+
+  const renderAuthSection = () => {
+    if (isLoading) {
+      return (
+        <li>
+          <div className="flex items-center gap-2 px-3 py-2">
+            <Loader2 className="h-5 w-5 animate-spin text-campfire" />
+          </div>
+        </li>
+      );
+    }
+
+    if (isAuthenticated) {
+      return (
+        <li className="flex items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="hover:bg-opacity-80 px-3 py-2 rounded font-montserrat font-medium">
+                <UserRound/>
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="font-montserrat">
+              { user?.role === 'super_admin' && (
+                <DropdownMenuItem>
+                  <Link href="/admin" className="w-full">
+                    Admin Dashboard
+                  </Link>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem>
+                <Link href="/blogs/create" className="w-full">
+                  Create Blog
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="cursor-pointer"
+                aria-label="Logout"
+                aria-busy={isLoggingOut}
+              >
+                {isLoggingOut ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Logging out...</span>
+                  </div>
+                ) : (
+                  'Logout'
+                )}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </li>
+      );
+    }
+
+    return (
+      <li>
+        <Link href={`/${locale}/auth`}>
+          <Button className={`${styles.loginButton} bg-campfire font-montserrat font-medium`}>
+            {t('login')}
+          </Button>
+        </Link>
+      </li>
+    );
   };
 
   return (
@@ -87,44 +169,7 @@ export default function UserHeader() {
                 </Link>
               </li>
               <LanguageSwitcher currentLocale={locale} />
-
-              {isAuthenticated ? (
-                <li className="flex items-center">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="hover:bg-opacity-80 px-3 py-2 rounded font-montserrat font-medium">
-                        <UserRound/>
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="font-montserrat">
-                      { user?.role === 'super_admin' && (
-                        <DropdownMenuItem>
-                          <Link href="/admin" className="w-full">
-                            Admin Dashboard
-                          </Link>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem>
-                        <Link href="/blogs/create" className="w-full">
-                          Create Blog
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Logout
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </li>
-              ) : (
-                <li>
-                  <Link href={`/${locale}/auth`}>
-                    <Button className={`${styles.loginButton} bg-campfire font-montserrat font-medium`}>
-                      {t('login')}
-                    </Button>
-                  </Link>
-                </li>
-              )}
+              {renderAuthSection()}
             </ul>
           </nav>
         </div>
